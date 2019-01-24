@@ -67,7 +67,7 @@ describes.realWin('amp-jwplayer', {
           'https://content.jwplatform.com/players/482jsTAr-sDZEo0ea.html');
     });
   });
-  it('renders with a playlist and search, contextual, recency, backfill parameters', () => {
+  it('renders with a playlist and all parameters', () => {
     return getjwplayer({
       'data-playlist-id': '482jsTAr',
       'data-player-id': 'sDZEo0ea',
@@ -80,7 +80,7 @@ describes.realWin('amp-jwplayer', {
       expect(iframe).to.not.be.null;
       expect(iframe.tagName).to.equal('IFRAME');
       expect(iframe.src).to.equal(
-        'https://content.jwplatform.com/players/482jsTAr-sDZEo0ea.html?search=__CONTEXTUAL__&contextual=true&recency=9D&backfill=true');
+          'https://content.jwplatform.com/players/482jsTAr-sDZEo0ea.html?search=__CONTEXTUAL__&contextual=true&recency=9D&backfill=true');
     });
   });
   it('renders with a playlist and contextual, backfill parameters', () => {
@@ -94,7 +94,7 @@ describes.realWin('amp-jwplayer', {
       expect(iframe).to.not.be.null;
       expect(iframe.tagName).to.equal('IFRAME');
       expect(iframe.src).to.equal(
-        'https://content.jwplatform.com/players/482jsTAr-sDZEo0ea.html?contextual=true&backfill=true');
+          'https://content.jwplatform.com/players/482jsTAr-sDZEo0ea.html?contextual=true&backfill=true');
     });
   });
   it('renders with a playlist and contextual parameter', () => {
@@ -107,7 +107,7 @@ describes.realWin('amp-jwplayer', {
       expect(iframe).to.not.be.null;
       expect(iframe.tagName).to.equal('IFRAME');
       expect(iframe.src).to.equal(
-        'https://content.jwplatform.com/players/482jsTAr-sDZEo0ea.html?contextual=true');
+          'https://content.jwplatform.com/players/482jsTAr-sDZEo0ea.html?contextual=true');
     });
   });
 

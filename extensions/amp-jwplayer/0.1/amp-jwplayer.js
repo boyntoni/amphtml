@@ -78,13 +78,13 @@ class AmpJWPlayer extends AMP.BaseElement {
         el);
 
     this.contentSearch_ = el.getAttribute('data-content-search') ||
-      false;
+        false;
     this.contentContextual_ = el.getAttribute('data-content-contextual') ||
-      false;
+        false;
     this.contentRecency_ = el.getAttribute('data-content-recency') ||
-      false;
+        false;
     this.contentBackfill_ = el.getAttribute('data-content-backfill') ||
-      false;
+        false;
   }
 
 
