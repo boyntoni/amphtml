@@ -78,11 +78,11 @@ class AmpJWPlayer extends AMP.BaseElement {
         el);
 
     this.contentSearch_ = el.getAttribute('data-content-search') ||
-        false;
+        '';
     this.contentContextual_ = el.getAttribute('data-content-contextual') ||
         false;
     this.contentRecency_ = el.getAttribute('data-content-recency') ||
-        false;
+        '';
     this.contentBackfill_ = el.getAttribute('data-content-backfill') ||
         false;
   }
@@ -94,11 +94,11 @@ class AmpJWPlayer extends AMP.BaseElement {
     const search = this.contentSearch_ ?
       'search=' + encodeURIComponent(this.contentSearch_) : '';
     const contextual = this.contentContextual_ ?
-      'contextual=' + encodeURIComponent(this.contentContextual_) : '';
+      'contextual=' + encodeURIComponent(this.contentContextual_.toString()) : '';
     const recency = this.contentRecency_ ?
       'recency=' + encodeURIComponent(this.contentRecency_) : '';
     const backfill = this.contentBackfill_ ?
-      'backfill=' + encodeURIComponent(this.contentBackfill_) : '';
+      'backfill=' + encodeURIComponent(this.contentBackfill_.toString()) : '';
     const contextualParams = [search, contextual, recency, backfill]
         .filter(e => !!e).join('&');
     const qsParams = contextualParams ? '?' + contextualParams : '';
