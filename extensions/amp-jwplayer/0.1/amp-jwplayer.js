@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {isLayoutSizeDefined} from '../../../src/layout';
-import {removeElement} from '../../../src/dom';
-import {userAssert} from '../../../src/log';
+import { isLayoutSizeDefined } from '../../../src/layout';
+import { removeElement } from '../../../src/dom';
+import { userAssert } from '../../../src/log';
 
 class AmpJWPlayer extends AMP.BaseElement {
 
@@ -29,6 +29,18 @@ class AmpJWPlayer extends AMP.BaseElement {
 
     /** @private {string} */
     this.playerid_ = '';
+
+    /** @private {string} */
+    this.contentSearch_ = '';
+
+    /** @private {boolean} */
+    this.contentContextual_ = false;
+
+    /** @private {string} */
+    this.contentRecency_ = '';
+
+    /** @private {boolean} */
+    this.contentBackfill_ = false;
 
     /** @private {?HTMLIFrameElement} */
     this.iframe_ = null;
@@ -53,25 +65,39 @@ class AmpJWPlayer extends AMP.BaseElement {
   /** @override */
   buildCallback() {
     this.contentid_ = userAssert(
-        (this.element.getAttribute('data-playlist-id') ||
-      this.element.getAttribute('data-media-id')),
-        'Either the data-media-id or the data-playlist-id ' +
+      (this.element.getAttribute('data-playlist-id') ||
+        this.element.getAttribute('data-media-id')),
+      'Either the data-media-id or the data-playlist-id ' +
       'attributes must be specified for <amp-jwplayer> %s',
-        this.element);
+      this.element);
 
     this.playerid_ = userAssert(
-        this.element.getAttribute('data-player-id'),
-        'The data-player-id attribute is required for <amp-jwplayer> %s',
-        this.element);
+      this.element.getAttribute('data-player-id'),
+      'The data-player-id attribute is required for <amp-jwplayer> %s',
+      this.element);
+    
+    this.contentSearch_ = this.element.getAttribute('data-content-search') || false;
+    this.contentContextual_ = this.element.getAttribute('data-content-contextual') || false;
+    this.contentRecency_ = this.element.getAttribute('data-content-recency') || false;
+    this.contentBackfill_ = this.element.getAttribute('data-content-backfill') || false;
   }
 
 
   /** @override */
   layoutCallback() {
     const iframe = this.element.ownerDocument.createElement('iframe');
+    const contentSearch = this.contentSearch_ ? 'search=' + encodeURIComponent(this.contentSearch_) : '';
+    const contentContextual = this.contentContextual_ ? 'contextual=' + encodeURIComponent(this.contentContextual_) : '';
+    const contentRecency = this.contentRecency_ ? 'recency=' + encodeURIComponent(this.contentRecency_) : '';
+    const contentBackfill = this.contentBackfill_ ? 'backfill=' + encodeURIComponent(this.contentBackfill_) : '';
+    const contextualParams = [contentSearch, contentContextual, contentRecency, contentBackfill].filter(e => !!e).join('&');
+    const qsParams = contextualParams ? '?' + contextualParams : '';
+    
     const src = 'https://content.jwplatform.com/players/' +
       encodeURIComponent(this.contentid_) + '-' +
-      encodeURIComponent(this.playerid_) + '.html';
+      encodeURIComponent(this.playerid_) + '.html' +
+      qsParams;
+
     iframe.setAttribute('frameborder', '0');
     iframe.setAttribute('allowfullscreen', 'true');
     iframe.src = src;
@@ -87,7 +113,7 @@ class AmpJWPlayer extends AMP.BaseElement {
       // The /players page can respond to "play" and "pause" commands from the
       // iframe's parent
       this.iframe_.contentWindow./*OK*/postMessage('pause',
-          'https://content.jwplatform.com');
+        'https://content.jwplatform.com');
     }
   }
 
@@ -108,13 +134,13 @@ class AmpJWPlayer extends AMP.BaseElement {
     const placeholder = this.win.document.createElement('amp-img');
     this.propagateAttributes(['aria-label'], placeholder);
     placeholder.setAttribute('src', 'https://content.jwplatform.com/thumbs/' +
-        encodeURIComponent(this.contentid_) + '-720.jpg');
+      encodeURIComponent(this.contentid_) + '-720.jpg');
     placeholder.setAttribute('layout', 'fill');
     placeholder.setAttribute('placeholder', '');
     placeholder.setAttribute('referrerpolicy', 'origin');
     if (placeholder.hasAttribute('aria-label')) {
       placeholder.setAttribute('alt',
-          'Loading video - ' + placeholder.getAttribute('aria-label')
+        'Loading video - ' + placeholder.getAttribute('aria-label')
       );
     } else {
       placeholder.setAttribute('alt', 'Loading video');
