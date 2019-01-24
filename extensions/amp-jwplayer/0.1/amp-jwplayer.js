@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { isLayoutSizeDefined } from '../../../src/layout';
-import { removeElement } from '../../../src/dom';
-import { userAssert } from '../../../src/log';
+import {isLayoutSizeDefined} from '../../../src/layout';
+import {removeElement} from '../../../src/dom';
+import {userAssert} from '../../../src/log';
 
 class AmpJWPlayer extends AMP.BaseElement {
 
@@ -64,35 +64,45 @@ class AmpJWPlayer extends AMP.BaseElement {
 
   /** @override */
   buildCallback() {
+    const el = this.element;
     this.contentid_ = userAssert(
-      (this.element.getAttribute('data-playlist-id') ||
-        this.element.getAttribute('data-media-id')),
-      'Either the data-media-id or the data-playlist-id ' +
-      'attributes must be specified for <amp-jwplayer> %s',
-      this.element);
+        (el.getAttribute('data-playlist-id') ||
+        el.getAttribute('data-media-id')),
+        'Either the data-media-id or the data-playlist-id ' +
+        'attributes must be specified for <amp-jwplayer> %s',
+        el);
 
     this.playerid_ = userAssert(
-      this.element.getAttribute('data-player-id'),
-      'The data-player-id attribute is required for <amp-jwplayer> %s',
-      this.element);
-    
-    this.contentSearch_ = this.element.getAttribute('data-content-search') || false;
-    this.contentContextual_ = this.element.getAttribute('data-content-contextual') || false;
-    this.contentRecency_ = this.element.getAttribute('data-content-recency') || false;
-    this.contentBackfill_ = this.element.getAttribute('data-content-backfill') || false;
+        el.getAttribute('data-player-id'),
+        'The data-player-id attribute is required for <amp-jwplayer> %s',
+        el);
+
+    this.contentSearch_ = el.getAttribute('data-content-search') ||
+      false;
+    this.contentContextual_ = el.getAttribute('data-content-contextual') ||
+      false;
+    this.contentRecency_ = el.getAttribute('data-content-recency') ||
+      false;
+    this.contentBackfill_ = el.getAttribute('data-content-backfill') ||
+      false;
   }
 
 
   /** @override */
   layoutCallback() {
     const iframe = this.element.ownerDocument.createElement('iframe');
-    const contentSearch = this.contentSearch_ ? 'search=' + encodeURIComponent(this.contentSearch_) : '';
-    const contentContextual = this.contentContextual_ ? 'contextual=' + encodeURIComponent(this.contentContextual_) : '';
-    const contentRecency = this.contentRecency_ ? 'recency=' + encodeURIComponent(this.contentRecency_) : '';
-    const contentBackfill = this.contentBackfill_ ? 'backfill=' + encodeURIComponent(this.contentBackfill_) : '';
-    const contextualParams = [contentSearch, contentContextual, contentRecency, contentBackfill].filter(e => !!e).join('&');
+    const search = this.contentSearch_ ?
+      'search=' + encodeURIComponent(this.contentSearch_) : '';
+    const contextual = this.contentContextual_ ?
+      'contextual=' + encodeURIComponent(this.contentContextual_) : '';
+    const recency = this.contentRecency_ ?
+      'recency=' + encodeURIComponent(this.contentRecency_) : '';
+    const backfill = this.contentBackfill_ ?
+      'backfill=' + encodeURIComponent(this.contentBackfill_) : '';
+    const contextualParams = [search, contextual, recency, backfill]
+        .filter(e => !!e).join('&');
     const qsParams = contextualParams ? '?' + contextualParams : '';
-    
+
     const src = 'https://content.jwplatform.com/players/' +
       encodeURIComponent(this.contentid_) + '-' +
       encodeURIComponent(this.playerid_) + '.html' +
@@ -113,7 +123,7 @@ class AmpJWPlayer extends AMP.BaseElement {
       // The /players page can respond to "play" and "pause" commands from the
       // iframe's parent
       this.iframe_.contentWindow./*OK*/postMessage('pause',
-        'https://content.jwplatform.com');
+          'https://content.jwplatform.com');
     }
   }
 
@@ -140,7 +150,7 @@ class AmpJWPlayer extends AMP.BaseElement {
     placeholder.setAttribute('referrerpolicy', 'origin');
     if (placeholder.hasAttribute('aria-label')) {
       placeholder.setAttribute('alt',
-        'Loading video - ' + placeholder.getAttribute('aria-label')
+          'Loading video - ' + placeholder.getAttribute('aria-label')
       );
     } else {
       placeholder.setAttribute('alt', 'Loading video');
