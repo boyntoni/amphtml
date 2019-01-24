@@ -94,7 +94,8 @@ class AmpJWPlayer extends AMP.BaseElement {
     const search = this.contentSearch_ ?
       'search=' + encodeURIComponent(this.contentSearch_) : '';
     const contextual = this.contentContextual_ ?
-      'contextual=' + encodeURIComponent(this.contentContextual_.toString()) : '';
+      'contextual='
+        + encodeURIComponent(this.contentContextual_.toString()) : '';
     const recency = this.contentRecency_ ?
       'recency=' + encodeURIComponent(this.contentRecency_) : '';
     const backfill = this.contentBackfill_ ?
