@@ -71,7 +71,7 @@ describes.realWin('amp-jwplayer', {
     return getjwplayer({
       'data-playlist-id': '482jsTAr',
       'data-player-id': 'sDZEo0ea',
-      'data-content-search': '__CONTEXTUAL__',
+      'data-content-search': 'dog',
       'data-content-contextual': true,
       'data-content-recency': '9D',
       'data-content-backfill': true,
@@ -80,7 +80,7 @@ describes.realWin('amp-jwplayer', {
       expect(iframe).to.not.be.null;
       expect(iframe.tagName).to.equal('IFRAME');
       expect(iframe.src).to.equal(
-          'https://content.jwplatform.com/players/482jsTAr-sDZEo0ea.html?search=__CONTEXTUAL__&contextual=true&recency=9D&backfill=true');
+          'https://content.jwplatform.com/players/482jsTAr-sDZEo0ea.html?search=dog&contextual=true&recency=9D&backfill=true');
     });
   });
   it('renders with a playlist and contextual, backfill parameters', () => {

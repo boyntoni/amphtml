@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {addParamsToUrl} from '../../../src/url';
 import {isLayoutSizeDefined} from '../../../src/layout';
 import {removeElement} from '../../../src/dom';
 import {userAssert} from '../../../src/log';
@@ -91,23 +92,24 @@ class AmpJWPlayer extends AMP.BaseElement {
   /** @override */
   layoutCallback() {
     const iframe = this.element.ownerDocument.createElement('iframe');
-    const search = this.contentSearch_ ?
-      'search=' + encodeURIComponent(this.contentSearch_) : '';
-    const contextual = this.contentContextual_ ?
-      'contextual='
-        + encodeURIComponent(this.contentContextual_.toString()) : '';
-    const recency = this.contentRecency_ ?
-      'recency=' + encodeURIComponent(this.contentRecency_) : '';
-    const backfill = this.contentBackfill_ ?
-      'backfill=' + encodeURIComponent(this.contentBackfill_.toString()) : '';
-    const contextualParams = [search, contextual, recency, backfill]
-        .filter(e => !!e).join('&');
-    const qsParams = contextualParams ? '?' + contextualParams : '';
+    const contextualVal = !!this.contentSearch__ ?
+      this.determineContextual() : undefined;
+    const qs = {};
+    qs['search'] = !!contextualVal ?
+      encodeURIComponent(contextualVal) : undefined;
+    qs['contextual'] = !!this.contentContextual_ ?
+      encodeURIComponent(this.contentContextual_.toString()) : undefined;
+    qs['recency'] = !!this.contentRecency_ ?
+      encodeURIComponent(this.contentRecency_) : undefined;
+    qs['backfill'] = !!this.contentBackfill_ ?
+      encodeURIComponent(this.contentBackfill_.toString()) : undefined;
 
-    const src = 'https://content.jwplatform.com/players/' +
-      encodeURIComponent(this.contentid_) + '-' +
-      encodeURIComponent(this.playerid_) + '.html' +
-      qsParams;
+    const cid = encodeURIComponent(this.contentid_);
+    const pid = encodeURIComponent(this.playerid_);
+
+    const baseUrl = `https://content.jwplatform.com/players/${cid}-${pid}.html`;
+    const src = Object.keys(qs).length ?
+      addParamsToUrl(baseUrl, qs) : baseUrl;
 
     iframe.setAttribute('frameborder', '0');
     iframe.setAttribute('allowfullscreen', 'true');
@@ -158,8 +160,21 @@ class AmpJWPlayer extends AMP.BaseElement {
     }
     return placeholder;
   }
+  /**
+  *
+  */
+  determineContextual() {
+    if (this.contentSearch_ === '__CONTEXTUAL__') {
+      const context = this.getAmpDoc().getHeadNode();
+      const ogTitleElement = context.querySelector('meta[property="og:title"]');
+      const ogTitle = ogTitleElement ?
+        ogTitleElement.getAttribute('content') : null;
+      const title = (context.querySelector('title') || {}).textContent;
+      return encodeURIComponent(ogTitle || title || '');
+    }
+    return this.contentSearch_;
+  }
 }
-
 
 AMP.extension('amp-jwplayer', '0.1', AMP => {
   AMP.registerElement('amp-jwplayer', AmpJWPlayer);
