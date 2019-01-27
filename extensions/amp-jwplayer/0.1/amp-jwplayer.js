@@ -92,18 +92,14 @@ class AmpJWPlayer extends AMP.BaseElement {
   /** @override */
   layoutCallback() {
     const iframe = this.element.ownerDocument.createElement('iframe');
-    const contextualVal = !!this.contentSearch__ ?
-      this.determineContextual() : undefined;
-    const qs = {};
-    qs['search'] = !!contextualVal ?
-      encodeURIComponent(contextualVal) : undefined;
-    qs['contextual'] = !!this.contentContextual_ ?
-      encodeURIComponent(this.contentContextual_.toString()) : undefined;
-    qs['recency'] = !!this.contentRecency_ ?
-      encodeURIComponent(this.contentRecency_) : undefined;
-    qs['backfill'] = !!this.contentBackfill_ ?
-      encodeURIComponent(this.contentBackfill_.toString()) : undefined;
-
+    const searchVal = this.getContextualVal();
+    const qs = {
+      'search': searchVal || undefined,
+      'contextual': this.contentContextual_ || undefined,
+      'recency': this.contentRecency_ || undefined,
+      'backfill': this.contentBackfill_ || undefined,
+    };
+  
     const cid = encodeURIComponent(this.contentid_);
     const pid = encodeURIComponent(this.playerid_);
 
@@ -163,7 +159,7 @@ class AmpJWPlayer extends AMP.BaseElement {
   /**
   *
   */
-  determineContextual() {
+  getContextualVal() {
     if (this.contentSearch_ === '__CONTEXTUAL__') {
       const context = this.getAmpDoc().getHeadNode();
       const ogTitleElement = context.querySelector('meta[property="og:title"]');
