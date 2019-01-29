@@ -15,9 +15,11 @@
  */
 
 import {addParamsToUrl} from '../../../src/url';
+import {dict} from '../../../src/utils/object';
 import {isLayoutSizeDefined} from '../../../src/layout';
 import {removeElement} from '../../../src/dom';
 import {userAssert} from '../../../src/log';
+
 
 class AmpJWPlayer extends AMP.BaseElement {
 
@@ -93,19 +95,18 @@ class AmpJWPlayer extends AMP.BaseElement {
   layoutCallback() {
     const iframe = this.element.ownerDocument.createElement('iframe');
     const searchVal = this.getContextualVal();
-    const qs = {
+
+    const cid = encodeURIComponent(this.contentid_);
+    const pid = encodeURIComponent(this.playerid_);
+    const qs = dict({
       'search': searchVal || undefined,
       'contextual': this.contentContextual_ || undefined,
       'recency': this.contentRecency_ || undefined,
       'backfill': this.contentBackfill_ || undefined,
-    };
-  
-    const cid = encodeURIComponent(this.contentid_);
-    const pid = encodeURIComponent(this.playerid_);
+    });
 
     const baseUrl = `https://content.jwplatform.com/players/${cid}-${pid}.html`;
-    const src = Object.keys(qs).length ?
-      addParamsToUrl(baseUrl, qs) : baseUrl;
+    const src = addParamsToUrl(baseUrl, qs);
 
     iframe.setAttribute('frameborder', '0');
     iframe.setAttribute('allowfullscreen', 'true');
