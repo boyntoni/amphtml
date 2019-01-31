@@ -15,7 +15,7 @@
  */
 
 import '../amp-jwplayer';
-
+import {htmlFor} from '../../../../src/static-template';
 
 describes.realWin('amp-jwplayer', {
   amp: {
@@ -37,6 +37,12 @@ describes.realWin('amp-jwplayer', {
     jw.setAttribute('width', '320');
     jw.setAttribute('height', '180');
     jw.setAttribute('layout', 'responsive');
+    const html = htmlFor(doc);
+    env.sandbox.stub(env.ampdoc.getHeadNode(), 'querySelector')
+        .withArgs('meta')
+        .returns(
+            html`<meta property="og:title" content="title_tag" />`,
+        );
     doc.body.appendChild(jw);
     return jw.build().then(() => { jw.layoutCallback(); return jw; });
   }
@@ -65,6 +71,20 @@ describes.realWin('amp-jwplayer', {
       expect(iframe.tagName).to.equal('IFRAME');
       expect(iframe.src).to.equal(
           'https://content.jwplatform.com/players/482jsTAr-sDZEo0ea.html');
+    });
+  });
+  it('renders with a playlist and parses contextual parameter', () => {
+    return getjwplayer({
+      'data-playlist-id': '482jsTAr',
+      'data-player-id': 'sDZEo0ea',
+      'data-content-search': '__CONTEXTUAL__',
+      'data-content-contextual': true,
+    }).then(jw => {
+      const iframe = jw.querySelector('iframe');
+      expect(iframe).to.not.be.null;
+      expect(iframe.tagName).to.equal('IFRAME');
+      expect(iframe.src).to.equal(
+          'https://content.jwplatform.com/players/482jsTAr-sDZEo0ea.html?search=title_tag&contextual=true');
     });
   });
   it('renders with a playlist and all parameters', () => {
@@ -139,6 +159,8 @@ describes.realWin('amp-jwplayer', {
           'https://content.jwplatform.com/players/zzz-sDZEo0ea.html');
     });
   });
+
+  
 
   describe('createPlaceholderCallback', () => {
     it('should create a placeholder image', () => {
