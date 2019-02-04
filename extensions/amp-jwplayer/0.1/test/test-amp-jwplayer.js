@@ -38,7 +38,7 @@ describes.realWin('amp-jwplayer', {
     jw.setAttribute('height', '180');
     jw.setAttribute('layout', 'responsive');
     const html = htmlFor(env.win.document);
-    env.sandbox.stub(env, 'getContextualVal')
+    env.sandbox.stub(env.ampdoc.getHeadNode(), 'querySelector')
         .withArgs('meta')
         .returns([
             html`<meta property="og:title" content="title_tag" />`
