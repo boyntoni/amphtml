@@ -94,12 +94,10 @@ class AmpJWPlayer extends AMP.BaseElement {
   /** @override */
   layoutCallback() {
     const iframe = this.element.ownerDocument.createElement('iframe');
-    const searchVal = this.getContextualVal();
-
     const cid = encodeURIComponent(this.contentid_);
     const pid = encodeURIComponent(this.playerid_);
     const qs = dict({
-      'search': searchVal || undefined,
+      'search': this.getContextualVal() || undefined,
       'contextual': this.contentContextual_ || undefined,
       'recency': this.contentRecency_ || undefined,
       'backfill': this.contentBackfill_ || undefined,
@@ -169,7 +167,7 @@ class AmpJWPlayer extends AMP.BaseElement {
       const title = (context.querySelector('title') || {}).textContent;
       return encodeURIComponent(ogTitle || title || '');
     }
-    return this.contentSearch_;
+    return this.contentSearch_ ;
   }
 }
 
